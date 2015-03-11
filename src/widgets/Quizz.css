@@ -63,4 +63,10 @@
 	height:100%;
 }
 
+.Ldt-Ressources-Overlay {
+	text-align:center;
+	z-index:1;
+	background-color:white;
+	width:622px;
+}
 

@@ -64,6 +64,12 @@ IriSP.Widgets.Quizz.prototype.update = function(annotation) {
 
 	}
 	$(".Ldt-Quizz-Questions").html(output);
+
+	if (typeof this.annotation.content.data.resource != "undefined") {
+		$(".Ldt-Ressources-Overlay").html(annotation.content.data.resource);
+		$(".Ldt-Ressources-Overlay").show();
+	}
+
 	$(".Ldt-Quizz-Overlay").show();
     
 };
@@ -71,8 +77,6 @@ IriSP.Widgets.Quizz.prototype.update = function(annotation) {
 IriSP.Widgets.Quizz.prototype.answer = function() { 
 	//alert(this.annotation.content.data.question);
 	//Display feedbacks
-	
-	$("video")[0].pause();
 
 	$( ".quizz-question-feedback").each(function(index) {
 		$(this).fadeIn();
@@ -107,6 +111,7 @@ IriSP.Widgets.Quizz.prototype.answer = function() {
 
 		$(".Ldt-Quizz-Votes").fadeOut();
 		$(".Ldt-Quizz-Overlay").hide();
+		$(".Ldt-Ressources-Overlay").hide();
 
 	});
 
@@ -124,7 +129,9 @@ IriSP.Widgets.Quizz.prototype.draw = function() {
     });
     var _this = this;
 	
-	_this.container = $("<div class='Ldt-Quizz-Overlay right_panel'></div>").appendTo($("[widget-type*=Player]"));
+	_this.container = $("<div class='Ldt-Quizz-Overlay right_panel'></div>").prependTo($("[widget-type*=Player]"));
+	_this.ressourcesContainer = $("<div class='Ldt-Ressources-Overlay left_panel'></div>").prependTo($("[widget-type*=Player]"));
+
 	$(".Ldt-Quizz-Overlay").hide();
 
 	_this.container.html(this.template);
