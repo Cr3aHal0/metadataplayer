@@ -32,6 +32,9 @@ IriSP.Widgets.Quizz.prototype.annotationTemplate = '';
 
 IriSP.Widgets.Quizz.prototype.update = function(annotation) {
 
+	//Pause the current video
+	this.media.pause();
+
 	this.annotation = annotation;
 
 	var question = annotation.content.data.question;
@@ -68,6 +71,9 @@ IriSP.Widgets.Quizz.prototype.update = function(annotation) {
 IriSP.Widgets.Quizz.prototype.answer = function() { 
 	//alert(this.annotation.content.data.question);
 	//Display feedbacks
+	
+	$("video")[0].pause();
+
 	$( ".quizz-question-feedback").each(function(index) {
 		$(this).fadeIn();
 	});
@@ -96,15 +102,15 @@ IriSP.Widgets.Quizz.prototype.answer = function() {
 
 	$(".Ldt-Quizz-Votes").delay(500).fadeIn();
 	
-	$(".Ldt-Quizz-Votes-Buttons").click(function() {
+	$(".Ldt-Quizz-Votes-Buttons").click(function(e, media) {
 		//Todo : thanks people for their feedback, then close the quizz window
 
 		$(".Ldt-Quizz-Votes").fadeOut();
 		$(".Ldt-Quizz-Overlay").hide();
+
 	});
 
-	//Check if the question was correct or no
-	//if (this.annotation.content.
+	//$(".Ldt-Quizz-Votes-Buttons").trigger("click", this.media);
 };
 
 IriSP.Widgets.Quizz.prototype.skip_question = function() {
@@ -117,9 +123,9 @@ IriSP.Widgets.Quizz.prototype.draw = function() {
         return _annotation.begin;
     });
     var _this = this;
-    
 	
 	_this.container = $("<div class='Ldt-Quizz-Overlay right_panel'></div>").appendTo($("[widget-type*=Player]"));
+	$(".Ldt-Quizz-Overlay").hide();
 
 	_this.container.html(this.template);
 
@@ -134,8 +140,6 @@ IriSP.Widgets.Quizz.prototype.draw = function() {
             _this.update(_a);
         });
     });
-    if (_annotations.length)
-        _this.update(_annotations[0]);
 }
 
 //UniqueChoice Question
