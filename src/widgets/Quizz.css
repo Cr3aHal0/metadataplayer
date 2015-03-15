@@ -2,8 +2,9 @@
 
 .Ldt-Quizz-Container {
     margin: auto;
-	border: 1px solid black;
-	padding: 10px;
+        border: 1px solid black;
+        padding: 10px;
+    font-size: 18pt;
 }
 
 .Ldt-Quizz-Image {
@@ -12,61 +13,103 @@
 }
 
 .Ldt-Quizz-Questions {
-	margin: 10px;
-	padding: 10px;
-	border-left:5px solid gray;
+        margin: 10px;
+        padding: 10px;
+        border-left:5px solid gray;
 }
 
 .quizz-question-block {
-	padding-top:10px;
+        padding-top:10px;
 }
 
 .quizz-question-feedback {
-	display:none;
+        display:none;
+		font-size:15px;
+}
+
+.quizz-question-feedback div {
+        display:inline-block;
+		height:100%;
+}
+
+.quizz-question-correct-feedback:before, .quizz-question-incorrect-feedback:before {
+		content: '';
+		vertical-align:middle;
+		display: inline-block;
+		width: 48px;
+		height: 48px;
+}
+
+.quizz-question-correct-feedback:before {
+		background: url(img/valid_sprites.png) left top no-repeat;
+}
+
+.quizz-question-incorrect-feedback:before {
+		background: url(img/valid_sprites.png) -49px top no-repeat;
 }
 
 .Ldt-Quizz-Submit {
-	margin:10px;
+        margin:10px;
+}
+
+.Ldt-Quizz-Submit .quizz-submit-skip-link {
+        float:left;
+}
+
+.quizz-submit-skip_link a {
+    text-decoration: none;
+    font-size: 16pt;
 }
 
 .Ldt-Quizz-Submit .quizz-submit-button {
-	float:right;
-	width:50px;
-}
-
-.Ldt-Quizz-Submit .quizz-submit-skip_link {
-	width:500px;
-	float:left;
+    float: right;
 }
 
 .Ldt-Quizz-Votes {
-	display:none;
+        display:none;
 }
 
 .Ldt-Quizz-Votes-Buttons div{
-	display:inline-block;
-	width:33%;
-	text-align:center;
+        display:inline-block;
+        width:33%;
+        text-align:center;
 }
 
 .Ldt-Quizz-Vote-Skip-Block {
-	width:30% !important;
-	text-align:right;
+        width:30% !important;
+        text-align:right;
+}
+
+.Ldt-Quizz-Vote-Skip-Block a {
+    text-decoration: none;
 }
 
 .Ldt-Quizz-Overlay {
-	position:absolute;
-	top:0px;
-	background-color:white;
+        position:absolute;
+        top:0px;
+        background-color:white;
     z-index:1000;
-	width:622px;
-	height:100%;
+        width:622px;
+        height:100%;
 }
 
 .Ldt-Ressources-Overlay {
-	text-align:center;
-	z-index:1;
-	background-color:white;
-	width:622px;
+		display:none;
+        text-align:center;
+        z-index:1;
+        background-color:white;
+        width:622px;
 }
 
+input[type="button"] {
+  border: none;
+  font-size: 20pt;
+  text-align: center;
+  border-radius: 8px;
+  background-color: #5BCE5B;
+  color: #fff;
+}
+
+input[value="Non"] {
+  background-color: #F86060;
+}

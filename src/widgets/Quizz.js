@@ -16,7 +16,7 @@ IriSP.Widgets.Quizz.prototype.template = '<div class="Ldt-Quizz-Container"><h1 c
 										+ '	</fieldset>'
 										+ '	<div class="Ldt-Quizz-Submit">'
 										+ '		<div class="quizz-submit-button"><input type="button" value="Valider" /></div>'
-										+ '		<div class="quizz-submit-skip_link"><a href="#">Skip</a></div><div style="clear:both;"></div>'
+										+ '		<div class="quizz-submit-skip-link"><a href="#">Skip</a></div><div style="clear:both;"></div>'
 										+ '	</div>'
 										+ '	<div class="Ldt-Quizz-Votes">'
 										+ '		<h1>Avez-vous trouvé cette question utile ?</h1>'
@@ -32,6 +32,9 @@ IriSP.Widgets.Quizz.prototype.annotationTemplate = '';
 
 IriSP.Widgets.Quizz.prototype.update = function(annotation) {
 
+    $(".Ldt-ImageDisplay-Overlay-Left").on("click", function (event) { event.preventDefault(); });
+    $(".Ldt-ImageDisplay-Overlay-Right").on("click", function (event) { event.preventDefault(); });
+
 	//Pause the current video
 	this.media.pause();
 
@@ -39,6 +42,10 @@ IriSP.Widgets.Quizz.prototype.update = function(annotation) {
 
 	var question = annotation.content.data.question;
 	var answers = annotation.content.data.answers;
+
+	//Hide useless components
+	$(".Ldt-Ressources-Overlay").hide();
+	$(".Ldt-Quizz-Votes").hide();
 
 	$(".Ldt-Quizz-Container .Ldt-Quizz-Title").html(question);
 
@@ -58,13 +65,14 @@ IriSP.Widgets.Quizz.prototype.update = function(annotation) {
 		//alert( answers[i].content);
 
 		output += '<div class="quizz-question-block"><p>' + this.question.renderTemplate(answers[i], i) + answers[i].content + '</p>';
-		var color = (answers[i].correct == true) ? "green" : "red";
-		output += '<p class="quizz-question-feedback" style="color:' + color +';">'+ answers[i].feedback +'</p>';
+		var color = (answers[i].correct == true) ? "quizz-question-correct-feedback" : "quizz-question-incorrect-feedback";
+		output += '<div class="quizz-question-feedback '+ color +'">'+ answers[i].feedback +'</div>';
 		output += '</div>';
 
 	}
 	$(".Ldt-Quizz-Questions").html(output);
 
+	//If there is an attached resource, display it on the resources overlay
 	if (typeof this.annotation.content.data.resource != "undefined") {
 		$(".Ldt-Ressources-Overlay").html(annotation.content.data.resource);
 		$(".Ldt-Ressources-Overlay").show();
@@ -72,6 +80,15 @@ IriSP.Widgets.Quizz.prototype.update = function(annotation) {
 
 	$(".Ldt-Quizz-Overlay").show();
     
+	$(".Ldt-Quizz-Submit").fadeIn();
+
+	//In case we click on the first "Skip" link
+	$(".quizz-submit-skip-link").click({media: this.media}, function(event) {
+		$(".Ldt-Quizz-Votes").fadeOut();
+		$(".Ldt-Quizz-Overlay").hide();
+		$(".Ldt-Ressources-Overlay").hide();
+		event.data.media.play();
+	});
 };
 
 IriSP.Widgets.Quizz.prototype.answer = function() { 
@@ -86,7 +103,6 @@ IriSP.Widgets.Quizz.prototype.answer = function() {
 	var faux = false;
 	var i =0;
 
-	
 	while (i < answers.length && faux == false) {
 		console.log("Question : "+ i +" => réponse : "+ $(".quizz-question-" + i).is(':checked'));
 		if ( !this.question.isCorrect(i, $(".quizz-question-" + i).is(':checked'))) {
@@ -104,10 +120,15 @@ IriSP.Widgets.Quizz.prototype.answer = function() {
 		alert("Bonne réponse !");
 	}
 
+	//Hide the "Validate" button and display the UI dedicated to votes
+	$(".Ldt-Quizz-Submit").fadeOut();
 	$(".Ldt-Quizz-Votes").delay(500).fadeIn();
 	
-	$(".Ldt-Quizz-Votes-Buttons").click(function(e, media) {
+	$(".Ldt-Quizz-Votes-Buttons input[type=\"button\"], .Ldt-Quizz-Votes-Buttons a").click({media: this.media}, function(event) {
 		//Todo : thanks people for their feedback, then close the quizz window
+		
+		//Resume the current video
+		event.data.media.play();
 
 		$(".Ldt-Quizz-Votes").fadeOut();
 		$(".Ldt-Quizz-Overlay").hide();
@@ -115,7 +136,7 @@ IriSP.Widgets.Quizz.prototype.answer = function() {
 
 	});
 
-	//$(".Ldt-Quizz-Votes-Buttons").trigger("click", this.media);
+	$(".Ldt-Quizz-Votes-Buttons").trigger("click", this.media);
 };
 
 IriSP.Widgets.Quizz.prototype.skip_question = function() {
