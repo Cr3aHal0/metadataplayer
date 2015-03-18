@@ -123,12 +123,16 @@ IriSP.Widgets.QuizzCreator.prototype.template =
 	+			'<option value="unique_choice">Choix unique</option>'
 	+			'<option value="multiple_choice">Choix multiple</option>'
 	+		'</select><button class="Ldt-QuizzCreator-Question-Add">Ajouter</button></p>'
-	+ 		'</div>'
-	+ 		'<div class="Ldt-QuizzCreator-Questions-Block">'
+	+ 	'</div>'
+	+	' à <input type="text" placeholder="hh:mm:ss" id="Ldt-QuizzCreator-Time" />'
+	+ 	'<div class="Ldt-QuizzCreator-Questions-Block">'
 	+ 	'</div>'
 	+ '</div>';
 
 IriSP.Widgets.QuizzCreator.prototype.draw = function() {
+    var _annotations = this.getWidgetAnnotations().sortBy(function(_annotation) {
+        return _annotation.begin;
+    });
     var _this = this;
 
     this.begin = new IriSP.Model.Time();
@@ -145,7 +149,43 @@ IriSP.Widgets.QuizzCreator.prototype.draw = function() {
 	//	alert(this.question.renderTemplate(null, 1));
 	this.$.find(".Ldt-QuizzCreator-Question-Type").bind("change", this.functionWrapper("onQuestionTypeChange"));
 	this.$.find(".Ldt-QuizzCreator-Question-Add").bind("click", this.functionWrapper("onQuestionAdd"));
+
+	var flag = 1;
+    _annotations.forEach(function(_a) {
+		_a.on("enter", function() {
+            _this.addQuestion(_a, flag++);
+        });
+    });
 };
+
+IriSP.Widgets.QuizzCreator.prototype.addQuestion = function(annotation, number) {
+	if (annotation.content.data.type == "multiple_choice") {
+		this.question = new IriSP.Widgets.MultipleChoiceQuestion(annotation);
+	}
+	else if (annotation.content.data.type == "unique_choice") {
+		this.question = new IriSP.Widgets.UniqueChoiceQuestion(annotation);
+	}
+
+	var answers = annotation.content.data.answers;
+
+	var output = '';
+	$(".Ldt-QuizzCreator-Questions-Block").html(output);
+	alert("oui");
+
+	$("#Ldt-QuizzCreator-Time").val(annotation.begin);
+
+	for (i = 0; i < answers.length; i++) {
+		output += '<div class="Ldt-QuizzCreator-Questions-Question">'
+		+	'<div class="Ldt-QuizzCreator-Questions-Question-Correct">'+ this.question.renderFullTemplate(answers[i], this.nbQuestions) +'</div>'
+		+ 	'<div class="Ldt-QuizzCreator-Questions-Question-Content">Réponse :<br /><input type="text" id="question'+ this.nbQuestions +'" value="'+ answers[i].content +'" /><br />'
+		+	'Feedback :<br/><textarea id="feedback'+ this.nbQuestions +'">'+ answers[i].feedback +'</textarea></div>' 
+		+ 	'<div class="Ldt-QuizzCreator-Questions-Question-Delete"><button class="Ldt-QuizzCreator-Remove" id="remove'+ this.nbQuestions +'">x</button></div>'
+		+	'</div>';
+	}
+	$(".Ldt-QuizzCreator-Questions-Block").append(output);
+
+	this.nbQuestions++;
+}
 
 IriSP.Widgets.QuizzCreator.prototype.onQuestionTypeChange = function(e) {
 
