@@ -1,0 +1,53 @@
+.Ldt-QuizzCreator-Ui {
+	width: 100%;
+	padding:10px;
+}
+
+.Ldt-QuizzCreator-Form {
+	width: 100%;
+}
+
+.Ldt-QuizzCreator-Question-Type {
+
+}
+
+.Ldt-QuizzCreator-Questions-Block {
+	width:100%;
+}
+
+.Ldt-QuizzCreator-Questions-Question {
+	margin-top:5px;
+	border-top: 1px solid black;
+}
+
+.Ldt-QuizzCreator-Questions-Question div {
+	display:inline-block;
+	height:100%;
+	vertical-align:middle;
+	padding:10px;
+}
+
+.Ldt-QuizzCreator-Questions-Question-Correct {
+
+}
+
+.Ldt-QuizzCreator-Questions-Question-Content {
+	width: 600px;
+}
+
+.Ldt-QuizzCreator-Questions-Question-Content input, .Ldt-QuizzCreator-Questions-Question-Content textarea {
+	width: 100%;
+}
+
+.Ldt-QuizzCreator-Questions-Question-Time, .Ldt-QuizzCreator-Questions-Question-Delete{
+	vertical-align: top !important;
+	padding-top: 27px !important;
+}
+
+.Ldt-QuizzCreator-Questions-Question-Time input {
+	width:60px;
+}
+
+.Ldt-QuizzCreator-Questions-Question-Delete {
+
+}
