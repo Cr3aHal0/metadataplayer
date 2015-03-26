@@ -12,6 +12,11 @@ IriSP.serializers.ldt_localstorage = {
             begin: _data.begin.milliseconds,
             end: _data.end.milliseconds,
             content: {
+				data : ( _annType.title == "Quizz" ? {
+					type : _data.question_type,
+					question : _data.question_title,
+					answers : _data.question_answers
+				} : {} ),
                 description: _data.description,
                 title: _data.title,
                 audio: _data.audio
@@ -22,6 +27,7 @@ IriSP.serializers.ldt_localstorage = {
             type: ( typeof _annType.dont_send_id !== "undefined" && _annType.dont_send_id ? "" : _annType.id ),
             meta: {
                 created: _data.created,
+				"id-ref": ( _annType.title == "Quizz" ? "Quizz" : ""),
                 creator: _data.creator,
                 modified: _data.modified,
                 contributor: _data.contributor
@@ -38,6 +44,7 @@ IriSP.serializers.ldt_localstorage = {
         _ann.modified = new Date(_anndata.meta.modified);
         _ann.setMedia(_anndata.media, _source);
         var _anntype = _source.getElement(_anndata.type);
+		
         if (!_anntype) {
             _anntype = new IriSP.Model.AnnotationType(_anndata.type, _source);
             _anntype.title = _anndata.type_title;
@@ -62,6 +69,12 @@ IriSP.serializers.ldt_localstorage = {
         if (typeof _anndata.content.audio !== "undefined" && _anndata.content.audio.href) {
             _ann.audio = _anndata.content.audio;
         }
+		if (_anntype.title == "Quizz") {
+			_ann.content = _anndata.content;
+			_ann.content.data = _anndata.content.data;
+			_ann.content.data.question = _anndata.content.data.question
+			_ann.content.data.answers = _anndata.content.data.answers;
+		}
         _source.getAnnotations().push(_ann);
     },
     serialize : function(_source) {

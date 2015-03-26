@@ -537,6 +537,7 @@ IriSP.Widgets.CreateAnnotation.prototype.onSubmit = function() {
     }
     
     if (_url !== "") {
+		console.log(_exportedAnnotations);
         _export.addList("annotation",_exportedAnnotations); /* Ajout de la liste à exporter à l'objet Source */
         /* Envoi de l'annotation via AJAX au serveur ! */
         IriSP.jQuery.ajax({

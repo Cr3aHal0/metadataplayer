@@ -13,26 +13,31 @@ IriSP.Widgets.Quizz.prototype.defaults = {
 
 IriSP.Widgets.Quizz.prototype.template = '<div class="Ldt-Quizz-Container">'
 										+ '<div class="Ldt-Quizz-Score"></div>'
-										+ '<h1 class="Ldt-Quizz-Title">{{question}}</h1>'
-										+ '	<fieldset class="Ldt-Quizz-Questions">'
-										+ '	</fieldset>'
-										+ '	<div class="Ldt-Quizz-Submit">'
-										+ '		<div class="quizz-submit-button"><input type="button" value="Valider" /></div>'
-										+ '		<div class="quizz-submit-skip-link"><a href="#">Skip</a></div><div style="clear:both;"></div>'
+										+ '<h1 style="line-height:1;padding-top:10px;" class="Ldt-Quizz-Title">{{question}}</h1>'
+										+ '	<div class="Ldt-Quizz-Questions">'
 										+ '	</div>'
-										+ '	<div class="Ldt-Quizz-Votes">'
-										+ '		<h1>Avez-vous trouvé cette question utile ?</h1>'
-										+ '		<div class="Ldt-Quizz-Votes-Buttons">'
-										+ '			<div><input type="button" value="Non" class="Ldt-Quizz-Vote-Useless" /></div>'
-										+ '			<div><input type="button" value="Oui" class="Ldt-Quizz-Vote-Usefull" /></div>'
-										+ '			<div class="Ldt-Quizz-Vote-Skip-Block"><a href="#" class="Ldt-Quizz-Vote-Skip">Skip</a></div>'
-										+ ' 	</div>'
+										+ ' <div class="Ldt-Quizz-FootBar">'
+										+ '		<div class="Ldt-Quizz-Submit">'
+										+ '			<div class="quizz-submit-button"><input type="button" value="Valider" /></div>'
+										+ '			<div class="quizz-submit-skip-link"><a href="#">Skip</a></div><div style="clear:both;"></div>'
+										+ '		</div>'
+										+ '		<div class="Ldt-Quizz-Votes">'
+										+ '			<h1>Avez-vous trouvé cette question utile ?</h1>'
+										+ '			<div class="Ldt-Quizz-Votes-Buttons">'
+										+ '				<div><input type="button" value="Non" class="Ldt-Quizz-Vote-Useless" /></div>'
+										+ '				<div><input type="button" value="Oui" class="Ldt-Quizz-Vote-Usefull" /></div>'
+										+ '				<div class="Ldt-Quizz-Vote-Skip-Block"><a href="#" class="Ldt-Quizz-Vote-Skip">Skip</a></div>'
+										+ ' 		</div>'
+										+ '		</div>'
 										+ '	</div>'
 										+ '</div>';
 
 IriSP.Widgets.Quizz.prototype.annotationTemplate = '';
 
 IriSP.Widgets.Quizz.prototype.update = function(annotation) {
+
+	console.log("new annotation : ");
+	console.log(annotation);
 
 	//Pause the current video
 	this.media.pause();
@@ -50,6 +55,9 @@ IriSP.Widgets.Quizz.prototype.update = function(annotation) {
 	$(".Ldt-Quizz-Container .Ldt-Quizz-Title").html("Question "+ (annotation.number+1) + "/" + this.totalAmount +" : " +question);
 
 	var i = 0
+
+	var correctness = this.globalScore();
+	$(".Ldt-Quizz-Score").html(correctness[0] + " bonne(s) réponse(s) / " + correctness[1] + " mauvaise(s) réponse(s)");
 
 	this.question = new IriSP.Widgets.UniqueChoiceQuestion(annotation);
 
@@ -90,16 +98,19 @@ IriSP.Widgets.Quizz.prototype.update = function(annotation) {
 
 	var _this = this;
 	//Trying to catch timeupdate and play events
+	/*
     this.onMediaEvent("timeupdate", function(_time) {
-        if (_time != annotation.begin) {
-			console.log("timeupdate " + _time);
+        if (_time < annotation.begin || _time > ( annotation.begin + 1000) ) {
+			_this.hide();
+			_this.media.play();
 		}
     });
     this.onMediaEvent("play", function(_time) {
-        if (_time != annotation.begin) {
-			console.log("play " + _time);
+        if (_time < annotation.begin || _time > ( annotation.begin + 500)) {
+			_this.hide();
 		}
     });
+	*/
 };
 
 IriSP.Widgets.Quizz.prototype.hide = function() {
@@ -228,19 +239,19 @@ IriSP.Widgets.UniqueChoiceQuestion.prototype.isCorrect = function(answer, valid)
 	if (this.annotation.content.data.answers[answer].correct == true && valid == true) {
 		return true;
 	}
-	else if (typeof this.annotation.content.data.answers[answer].correct === "undefined" && valid == false) {
+	else if ((typeof this.annotation.content.data.answers[answer].correct === "undefined" || this.annotation.content.data.answers[answer].correct == false) && valid == false) {
 		return true;
 	}
 	return false;
 }
 
 IriSP.Widgets.UniqueChoiceQuestion.prototype.renderTemplate = function(answer, identifier) {
-	return '<input type="radio" class="quizz-question quizz-question-'+ identifier +'" name="question" -data-question="'+ identifier +'" value="' + identifier + '" /> ';
+	return '<input type="radio" class="quizz-question quizz-question-'+ identifier +'" name="question" data-question="'+ identifier +'" value="' + identifier + '" /> ';
 }
 
 IriSP.Widgets.UniqueChoiceQuestion.prototype.renderFullTemplate = function(answer, identifier) {
 	var correct = (answer.correct == true) ? "checked=\"checked\"" : "";
-	return '<input type="radio" '+ correct +' class="quizz-question quizz-question-'+ identifier +'" name="question" -data-question="'+ identifier +'" value="' + identifier + '" /> ';
+	return '<input type="radio" '+ correct +' class="quizz-question quizz-question-'+ identifier +'" name="question" data-question="'+ identifier +'" value="' + identifier + '" /> ';
 }
 
 //MultipleChoice Question
@@ -254,18 +265,18 @@ IriSP.Widgets.MultipleChoiceQuestion.prototype.isCorrect = function(answer, vali
 	if (this.annotation.content.data.answers[answer].correct == true && valid == true) {
 		return true;
 	}
-	else if (typeof this.annotation.content.data.answers[answer].correct === "undefined" && valid == false) {
+	else if ((typeof this.annotation.content.data.answers[answer].correct === "undefined" || this.annotation.content.data.answers[answer].correct == false) && valid == false) {
 		return true;
 	}
 	return false;
 }
 
 IriSP.Widgets.MultipleChoiceQuestion.prototype.renderTemplate = function(answer, identifier) {
-	return '<input type="checkbox" class="quizz-question quizz-question-'+ identifier +'" name="question['+ identifier +']" -data-question="'+ identifier +'" value="' + identifier + '" /> ';
+	return '<input type="checkbox" class="quizz-question quizz-question-'+ identifier +'" name="question['+ identifier +']" data-question="'+ identifier +'" value="' + identifier + '" /> ';
 }
 
 IriSP.Widgets.MultipleChoiceQuestion.prototype.renderFullTemplate = function(answer, identifier) {
 	var correct = (answer.correct == true) ? "checked=\"checked\"" : "";
-	return '<input type="checkbox" '+ correct +' class="quizz-question quizz-question-'+ identifier +'" name="question['+ identifier +']" -data-question="'+ identifier +'" value="' + identifier + '" /> ';
+	return '<input type="checkbox" '+ correct +' class="quizz-question quizz-question-'+ identifier +'" name="question['+ identifier +']" data-question="'+ identifier +'" value="' + identifier + '" /> ';
 }
 

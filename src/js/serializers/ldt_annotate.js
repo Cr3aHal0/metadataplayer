@@ -8,9 +8,15 @@ IriSP.serializers.ldt_annotate = {
     serializeAnnotation : function(_data, _source) {
         var _annType = _data.getAnnotationType();
         return {
+            id: _data.id,
             begin: _data.begin.milliseconds,
             end: _data.end.milliseconds,
             content: {
+				data : ( _annType.title == "Quizz" ? {
+					type : _data.question_type,
+					question : _data.question_title,
+					answers : _data.question_answers
+				} : {} ),
                 description: _data.description,
                 title: _data.title,
                 audio: _data.audio
@@ -21,7 +27,10 @@ IriSP.serializers.ldt_annotate = {
             type: ( typeof _annType.dont_send_id !== "undefined" && _annType.dont_send_id ? "" : _annType.id ),
             meta: {
                 created: _data.created,
-                creator: _data.creator
+				"id-ref": ( _annType.title == "Quizz" ? "Quizz" : ""),
+                creator: _data.creator,
+                modified: _data.modified,
+                contributor: _data.contributor
             }
         };
     },
@@ -57,6 +66,12 @@ IriSP.serializers.ldt_annotate = {
         if (typeof _anndata.content.audio !== "undefined" && _anndata.content.audio.href) {
             _ann.audio = _anndata.content.audio;
         }
+		if (_anntype.title == "Quizz") {
+			_ann.content = _anndata.content;
+			_ann.content.data = _anndata.content.data;
+			_ann.content.data.question = _anndata.content.data.question
+			_ann.content.data.answers = _anndata.content.data.answers;
+		}
         _source.getAnnotations().push(_ann);
     },
     serialize : function(_source) {
