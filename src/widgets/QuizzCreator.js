@@ -122,10 +122,10 @@ IriSP.Widgets.QuizzCreator.prototype.template =
 	+			'<option value="unique_choice">Choix unique</option>'
 	+			'<option value="multiple_choice">Choix multiple</option>'
 	+		'</select>'
-	+		' à <input type="text" placeholder="hh:mm:ss" class="Ldt-QuizzCreator-Time" /><button class="Ldt-QuizzCreator-Export-Link">Exporter</button></p>'
+	+		' à <input type="text" placeholder="hh:mm:ss" class="Ldt-QuizzCreator-Time" /><button class="Ldt-QuizzCreator-Export-Link">Exporter Quizz</button></p>'
 	+ 	'<div class="Ldt-QuizzCreator-Questions-Block">'
 	+ 	'</div>'
-	+	'<div><button class="Ldt-QuizzCreator-Question-Add">Ajouter</button>&nbsp;<button class="Ldt-QuizzCreator-Question-Save">Sauvegarder</button></div>'
+	+	'<div><button class="Ldt-QuizzCreator-Question-Add">Ajouter une Question</button>&nbsp;<button class="Ldt-QuizzCreator-Question-Save">Sauvegarder</button></div>'
 	+ '</div>';
 
 IriSP.Widgets.QuizzCreator.prototype.draw = function() {

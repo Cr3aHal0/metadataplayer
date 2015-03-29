@@ -17,6 +17,7 @@ IriSP.Widgets.Quizz.prototype.template = '<div class="Ldt-Quizz-Container">'
 										+ '	<div class="Ldt-Quizz-Questions">'
 										+ '	</div>'
 										+ ' <div class="Ldt-Quizz-FootBar">'
+										+ '		<div class="Ldt-Quizz-Result">Bonne réponse</div>'
 										+ '		<div class="Ldt-Quizz-Submit">'
 										+ '			<div class="quizz-submit-button"><input type="button" value="Valider" /></div>'
 										+ '			<div class="quizz-submit-skip-link"><a href="#">Skip</a></div><div style="clear:both;"></div>'
@@ -144,14 +145,17 @@ IriSP.Widgets.Quizz.prototype.answer = function() {
 
 	//Todo : display the result in a cool way :)
 	if (faux == true) {
-		alert("Mauvaise réponse");
+		$(".Ldt-Quizz-Result").html("Mauvaise réponse");
 		this.correct[this.annotation.number] = 0;
 	}
 	else
 	{
-		alert("Bonne réponse !");
+		$(".Ldt-Quizz-Result").html("Bonne réponse !");
 		this.correct[this.annotation.number] = 1;
 	}
+	$(".Ldt-Quizz-Result").animate({height:"100%"},500, "linear", function(){
+		$(".Ldt-Quizz-Result").delay( 2000 ).animate({height:"0%"}, 500);
+	});
 
 	var correctness = this.globalScore();
 	$(".Ldt-Quizz-Score").html(correctness[0] + " bonne(s) réponse(s) / " + correctness[1] + " mauvaise(s) réponse(s)");
