@@ -2,7 +2,7 @@
 
 .Ldt-Quizz-Container {
   	position: absolute;
-  	height: 100%;
+  	height: calc(100% - 4px);
   	top: 0px;
   	width: calc(100% - 20px);
 	margin: auto;
@@ -26,8 +26,8 @@
 }
 
 .Ldt-Quizz-Questions {
-		overflow-y: scroll;
-		max-height: 300px;
+		overflow-y: auto;
+		max-height: 100%;
         margin: 10px;
         padding: 10px;
         border-left:5px solid gray;

@@ -122,10 +122,10 @@ IriSP.Widgets.QuizzCreator.prototype.template =
 	+			'<option value="unique_choice">Choix unique</option>'
 	+			'<option value="multiple_choice">Choix multiple</option>'
 	+		'</select>'
-	+		' à <input type="text" placeholder="hh:mm:ss" class="Ldt-QuizzCreator-Time" /><button class="Ldt-QuizzCreator-Export-Link">Exporter Quizz</button></p>'
+	+		' à <input type="text" placeholder="hh:mm:ss" size="6" class="Ldt-QuizzCreator-Time" /><button class="Ldt-QuizzCreator-Export-Link">Exporter</button></p>'
 	+ 	'<div class="Ldt-QuizzCreator-Questions-Block">'
 	+ 	'</div>'
-	+	'<div><button class="Ldt-QuizzCreator-Question-Add">Ajouter une Question</button>&nbsp;<button class="Ldt-QuizzCreator-Question-Save">Sauvegarder</button></div>'
+	+	'<div><button class="Ldt-QuizzCreator-Question-Add">Ajouter une </button>&nbsp;<button class="Ldt-QuizzCreator-Question-Save">Sauvegarder</button></div>'
 	+ '</div>';
 
 IriSP.Widgets.QuizzCreator.prototype.draw = function() {
@@ -133,6 +133,9 @@ IriSP.Widgets.QuizzCreator.prototype.draw = function() {
     var _annotations = this.getWidgetAnnotations().sortBy(function(_annotation) {
         return _annotation.begin;
     });
+
+	console.log(_annotations.length + " Quizz annotations ");
+
     var _this = this;
 
     this.begin = new IriSP.Model.Time();
@@ -151,6 +154,7 @@ IriSP.Widgets.QuizzCreator.prototype.draw = function() {
 	this.$.find(".Ldt-QuizzCreator-Question-Add").bind("click", this.functionWrapper("onQuestionAdd"));
 	this.$.find(".Ldt-QuizzCreator-Question-Save").bind("click", this.functionWrapper("onSubmit"));
 
+
 	$(".Ldt-QuizzCreator-Export-Link").click(function() {
 		_this.exportAnnotations();
 	});
@@ -162,6 +166,10 @@ IriSP.Widgets.QuizzCreator.prototype.draw = function() {
         });
     });
 
+	$(".Ldt-QuizzCreator-Time").keypress(function() {
+		_this.setBegin(this.val());
+	});
+
     this.onMediaEvent("timeupdate", function(_time) {
         // Do not update timecode if description is not empty
         if (_this.$.find(".Ldt-QuizzCreator-Question-Area").val().trim() != "") {
@@ -172,7 +180,7 @@ IriSP.Widgets.QuizzCreator.prototype.draw = function() {
 
 
 IriSP.Widgets.QuizzCreator.prototype.addQuestion = function(annotation, number) {
-	
+
 	if (annotation.content.data.type == "multiple_choice") {
 		this.question = new IriSP.Widgets.MultipleChoiceQuestion(annotation);
 	}
@@ -194,12 +202,19 @@ IriSP.Widgets.QuizzCreator.prototype.addQuestion = function(annotation, number) 
 	for (i = 0; i < answers.length; i++) {
 		output += '<div class="Ldt-QuizzCreator-Questions-Question">'
 		+	'<div class="Ldt-QuizzCreator-Questions-Question-Correct">'+ this.question.renderFullTemplate(answers[i], this.nbQuestions) +'</div>'
-		+ 	'<div class="Ldt-QuizzCreator-Questions-Question-Content">Réponse :<br /><input type="text" data-question="'+ this.nbQuestions +'" id="question'+ this.nbQuestions +'" value="'+ answers[i].content +'" /><br />'
-		+	'Feedback :<br/><textarea data-question="'+ this.nbQuestions +'" id="feedback'+ this.nbQuestions +'">'+ answers[i].feedback +'</textarea></div>' 
+		+ 	'<div class="Ldt-QuizzCreator-Questions-Question-Content">Réponse :<br />'
+		+		'<input type="text" class="Ldt-QuizzCreator-Answer-Content" data-question="'+ this.nbQuestions +'" id="question'+ this.nbQuestions +'" value="'+ answers[i].content +'" /><br />'
+		+		'Feedback :<br/><textarea class="Ldt-QuizzCreator-Answer-Feedback" data-question="'+ this.nbQuestions +'" id="feedback'+ this.nbQuestions +'">'+ answers[i].feedback +'</textarea>'
+		+	'</div>' 
 		+ 	'<div class="Ldt-QuizzCreator-Questions-Question-Delete"><button class="Ldt-QuizzCreator-Remove" id="remove'+ this.nbQuestions +'">x</button></div>'
 		+	'</div>';
 		this.nbQuestions++;
 	}
+
+	$(".Ldt-QuizzCreator-Remove").click(function() {
+		$(this).closest(".Ldt-QuizzCreator-Questions-Question").remove();
+	});
+
 	$(".Ldt-QuizzCreator-Questions-Block").append(output);
 }
 
@@ -238,15 +253,19 @@ IriSP.Widgets.QuizzCreator.prototype.onQuestionAdd = function(e) {
 
 	var output = '<div class="Ldt-QuizzCreator-Questions-Question">'
 	+ 	'<div class="Ldt-QuizzCreator-Questions-Question-Correct">'+ this.question.renderTemplate(null, this.nbQuestions) +'</div>'
-	+ 	'<div class="Ldt-QuizzCreator-Questions-Question-Content">Réponse :<br /><input data-question="'+ this.nbQuestions +'" type="text" id="question'+ this.nbQuestions +'" /><br />'
-	+	'Feedback :<br/><textarea data-question="'+ this.nbQuestions +'"id="feedback'+ this.nbQuestions +'"></textarea></div>'
+	+ 	'<div class="Ldt-QuizzCreator-Questions-Question-Content">Réponse :<br /><input class="Ldt-QuizzCreator-Answer-Content" data-question="'+ this.nbQuestions +'" type="text" id="question'+ this.nbQuestions +'" /><br />'
+	+	'Feedback :<br/><textarea class="class="Ldt-QuizzCreator-Answer-Feedback" data-question="'+ this.nbQuestions +'"id="feedback'+ this.nbQuestions +'"></textarea></div>'
 	+ 	'<div class="Ldt-QuizzCreator-Questions-Question-Delete"><button class="Ldt-QuizzCreator-Remove" id="remove'+ this.nbQuestions +'">x</button></div>'
 	+ '</div>';
 
 	this.nbQuestions++;
 
 	$(".Ldt-QuizzCreator-Questions-Block").append(output);
-	
+
+	$(".Ldt-QuizzCreator-Remove").click(function() {
+		$(this).closest(".Ldt-QuizzCreator-Questions-Question").remove();
+	});
+
     this.pauseOnWrite();
 };
 
@@ -323,6 +342,8 @@ IriSP.Widgets.QuizzCreator.prototype.onSubmit = function() {
         /* Il ne faudra pas envoyer l'ID généré au serveur */
         _annotationType.dont_send_id = true;
         /* Il faut inclure le titre dans le type d'annotation */
+		_annotationType.id = "Quizz";
+
         _annotationType.title = this.annotation_type;
     }
 
@@ -341,13 +362,17 @@ IriSP.Widgets.QuizzCreator.prototype.onSubmit = function() {
 	_annotation.question_title = _annotation.description;
 	_annotation.question_answers = [];
 
+	
 	for(var i = 0; i < this.nbQuestions; i++) {
-		var answer = {
-			correct : ($(".quizz-question-"+ i).is(':checked')) ? true : false, 
-			content : $("#question"+ i).val(),
-			feedback : $("#feedback"+ i).val()
-		};
-		_annotation.question_answers.push(answer);
+		if (typeof $("#question"+ i) != "undefined") {
+			console.log(i);
+			var answer = {
+				correct : ($(".quizz-question-"+ i).is(':checked')) ? true : false, 
+				content : $("#question"+ i).val(),
+				feedback : $("#feedback"+ i).val()
+			};
+			_annotation.question_answers.push(answer);
+		}
 	}
 
     if (this.show_title_field) {
@@ -420,9 +445,9 @@ IriSP.Widgets.QuizzCreator.prototype.onSubmit = function() {
             contentType: 'application/json',
             data: _export.serialize(), /* L'objet Source est sérialisé */
             success: function(_data) {
-
+				console.log(_export.serialize());
 				alert("Question ajoutée avec succès");
-
+				_this.nbQuestions = 0;
                 //_this.showScreen('Saved'); /* Si l'appel a fonctionné, on affiche l'écran "Annotation enregistrée" */
                 if (_this.after_send_timeout) { /* Selon les options de configuration, on revient à l'écran principal ou on ferme le widget, ou rien */
                     window.setTimeout(

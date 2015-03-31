@@ -7,12 +7,13 @@ if (typeof IriSP.serializers === "undefined") {
 IriSP.serializers.ldt_localstorage = {
     serializeAnnotation : function(_data, _source) {
         var _annType = _data.getAnnotationType();
+		console.log(_annType.id);
         return {
             id: _data.id,
             begin: _data.begin.milliseconds,
             end: _data.end.milliseconds,
             content: {
-				data : ( _annType.title == "Quizz" ? {
+				data : ( _annType.id == "Quizz" ? {
 					type : _data.question_type,
 					question : _data.question_title,
 					answers : _data.question_answers
@@ -27,7 +28,7 @@ IriSP.serializers.ldt_localstorage = {
             type: ( typeof _annType.dont_send_id !== "undefined" && _annType.dont_send_id ? "" : _annType.id ),
             meta: {
                 created: _data.created,
-				"id-ref": ( _annType.title == "Quizz" ? "Quizz" : ""),
+				"id-ref": ( _annType.id == "Quizz" ? "Quizz" : ""),
                 creator: _data.creator,
                 modified: _data.modified,
                 contributor: _data.contributor
@@ -35,6 +36,8 @@ IriSP.serializers.ldt_localstorage = {
         };
     },
     deserializeAnnotation : function(_anndata, _source) {
+		console.log("Deserializing :");
+		console.log(_anndata);
         var _ann = new IriSP.Model.Annotation(_anndata.id, _source);
         _ann.description = _anndata.content.description || "";
         _ann.title = _anndata.content.title || "";
@@ -69,7 +72,7 @@ IriSP.serializers.ldt_localstorage = {
         if (typeof _anndata.content.audio !== "undefined" && _anndata.content.audio.href) {
             _ann.audio = _anndata.content.audio;
         }
-		if (_anntype.title == "Quizz") {
+		if (_anntype.id == "Quizz") {
 			_ann.content = _anndata.content;
 			_ann.content.data = _anndata.content.data;
 			_ann.content.data.question = _anndata.content.data.question

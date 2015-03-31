@@ -24,24 +24,23 @@
 	display:inline-block;
 	height:100%;
 	vertical-align:middle;
-	padding:10px;
 }
 
 .Ldt-QuizzCreator-Questions-Question-Correct {
-
+	width: 30px;
 }
 
 .Ldt-QuizzCreator-Questions-Question-Content {
-	width: 600px;
+	width: calc(100% - 80px);
 }
 
 .Ldt-QuizzCreator-Questions-Question-Content input, .Ldt-QuizzCreator-Questions-Question-Content textarea {
-	width: 100%;
+	width: calc(100% - 20px);
 }
 
 .Ldt-QuizzCreator-Questions-Question-Time, .Ldt-QuizzCreator-Questions-Question-Delete{
-	vertical-align: top !important;
-	padding-top: 27px !important;
+	/*vertical-align: top !important;
+	padding-top: 27px !important;*/
 }
 
 .Ldt-QuizzCreator-Questions-Question-Time input {
@@ -49,5 +48,5 @@
 }
 
 .Ldt-QuizzCreator-Questions-Question-Delete {
-
+	width: 20px;
 }
