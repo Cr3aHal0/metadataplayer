@@ -63,6 +63,22 @@
 		background: url(img/valid_sprites.png) -49px top no-repeat;
 }
 
+.Ldt-Quizz-Correct-Answer:before {
+		background: url(img/min_valid_sprites.png) left top no-repeat;
+}
+
+.Ldt-Quizz-Incorrect-Answer:before {
+		background: url(img/min_valid_sprites.png) -25px top no-repeat;
+}
+
+.Ldt-Quizz-Correct-Answer:before, .Ldt-Quizz-Incorrect-Answer:before {
+		content: '';
+		vertical-align:middle;
+		display: inline-block;
+		width: 24px;
+		height: 24px;
+}
+
 .Ldt-Quizz-Submit {
         margin:10px;
 }

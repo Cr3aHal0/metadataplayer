@@ -14,7 +14,7 @@ IriSP.Widgets.Quizz.prototype.defaults = {
 
 IriSP.Widgets.Quizz.prototype.template = '<div class="Ldt-Quizz-Container">'
 										+ '<div class="Ldt-Quizz-Score"></div>'
-										+ '<h1 style="line-height:1;padding-top:10px;" class="Ldt-Quizz-Title">{{question}}</h1>'
+										+ '<h1 style="line-height:1;padding-top:10px;text-align:center;" class="Ldt-Quizz-Title">{{question}}</h1>'
 										+ '	<div class="Ldt-Quizz-Questions">'
 										+ '	</div>'
 										+ ' <div class="Ldt-Quizz-FootBar">'
@@ -55,12 +55,15 @@ IriSP.Widgets.Quizz.prototype.update = function(annotation) {
 		$(".Ldt-Ressources-Overlay").hide();
 		$(".Ldt-Quizz-Votes").hide();
 
-		$(".Ldt-Quizz-Container .Ldt-Quizz-Title").html("Question "+ (annotation.number+1) + "/" + this.totalAmount +" : " +question);
+		$(".Ldt-Quizz-Container .Ldt-Quizz-Title").html(question);
 
 		var i = 0
 
 		var correctness = this.globalScore();
-		$(".Ldt-Quizz-Score").html(correctness[0] + " bonne(s) réponse(s) / " + correctness[1] + " mauvaise(s) réponse(s)");
+
+		var score = "";
+		score += '<span class="Ldt-Quizz-Correct-Answer">' + correctness[0] +'</span> / <span class="Ldt-Quizz-Incorrect-Answer">' + correctness[1] + '</span>';
+		$(".Ldt-Quizz-Score").html("Q"+ (annotation.number+1) + "/" + this.totalAmount + " : " + score);
 
 		this.question = new IriSP.Widgets.UniqueChoiceQuestion(annotation);
 
