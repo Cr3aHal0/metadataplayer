@@ -9,7 +9,7 @@
 }
 
 .Ldt-Ctrl-Left {
-  float:left; width: 300px;
+  float:left; width: 400px;
 }
 
 .Ldt-Ctrl-Right {
@@ -174,4 +174,14 @@ input.Ldt-Ctrl-SearchInput {
 
 .Ldt-Ctrl-Volume-Control:hover .ui-slider-handle {
      background: #F7268E;
+}
+
+/* quizz */
+
+.Ldt-Ctrl-Quizz-Enable {
+	width:80px;
+}
+
+.Ldt-Ctrl-Quizz-Enable button {
+	width: 100%;
 }

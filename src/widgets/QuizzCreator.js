@@ -266,6 +266,8 @@ IriSP.Widgets.QuizzCreator.prototype.onQuestionAdd = function(e) {
 		$(this).closest(".Ldt-QuizzCreator-Questions-Question").remove();
 	});
 
+	$(".Ldt-QuizzCreator-Answer-Content").last().focus();
+
     this.pauseOnWrite();
 };
 
@@ -473,6 +475,8 @@ IriSP.Widgets.QuizzCreator.prototype.onSubmit = function() {
                     _this.player.trigger("AnnotationsList.refresh"); /* On force le rafraîchissement du widget AnnotationsList */
                     _this.player.trigger("CreateAnnotation.created", _annotation.id);
                 }
+
+				_tabs.tabs("option", "active", get_tab_index('#tab-quizz'));
             },
             error: function(_xhr, _error, _thrown) {
                 IriSP.log("Error when sending annotation", _thrown);

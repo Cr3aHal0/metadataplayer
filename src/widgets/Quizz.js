@@ -7,7 +7,8 @@ IriSP.Widgets.Quizz = function(player, config) {
 IriSP.Widgets.Quizz.prototype = new IriSP.Widgets.Widget();
 
 IriSP.Widgets.Quizz.prototype.defaults = {
-    annotation_type: "Quizz"
+    annotation_type: "Quizz",
+	quizz_activated: true
     // container: "imageContainer"
 }
 
@@ -37,81 +38,83 @@ IriSP.Widgets.Quizz.prototype.annotationTemplate = '';
 
 IriSP.Widgets.Quizz.prototype.update = function(annotation) {
 
-	console.log("new annotation : ");
-	console.log(annotation);
+	if (this.quizz_activated) {
+		console.log("new annotation : ");
+		console.log(annotation);
 
-	//Pause the current video
-	this.media.pause();
+		//Pause the current video
+		this.media.pause();
 
-	this.annotation = annotation;
+		this.annotation = annotation;
 
-	var _this = this;
-	var question = annotation.content.data.question;
-	var answers = annotation.content.data.answers;
+		var _this = this;
+		var question = annotation.content.data.question;
+		var answers = annotation.content.data.answers;
 
-	//Hide useless components
-	$(".Ldt-Ressources-Overlay").hide();
-	$(".Ldt-Quizz-Votes").hide();
+		//Hide useless components
+		$(".Ldt-Ressources-Overlay").hide();
+		$(".Ldt-Quizz-Votes").hide();
 
-	$(".Ldt-Quizz-Container .Ldt-Quizz-Title").html("Question "+ (annotation.number+1) + "/" + this.totalAmount +" : " +question);
+		$(".Ldt-Quizz-Container .Ldt-Quizz-Title").html("Question "+ (annotation.number+1) + "/" + this.totalAmount +" : " +question);
 
-	var i = 0
+		var i = 0
 
-	var correctness = this.globalScore();
-	$(".Ldt-Quizz-Score").html(correctness[0] + " bonne(s) réponse(s) / " + correctness[1] + " mauvaise(s) réponse(s)");
+		var correctness = this.globalScore();
+		$(".Ldt-Quizz-Score").html(correctness[0] + " bonne(s) réponse(s) / " + correctness[1] + " mauvaise(s) réponse(s)");
 
-	this.question = new IriSP.Widgets.UniqueChoiceQuestion(annotation);
-
-	if (annotation.content.data.type == "multiple_choice") {
-		this.question = new IriSP.Widgets.MultipleChoiceQuestion(annotation);
-	}
-	else if (annotation.content.data.type == "unique_choice") {
 		this.question = new IriSP.Widgets.UniqueChoiceQuestion(annotation);
-	}
 
-	var output = "";
-	for (i = 0; i < answers.length; i++) {
-		//alert( answers[i].content);
-
-		output += '<div class="quizz-question-block"><p>' + this.question.renderTemplate(answers[i], i) + answers[i].content + '</p>';
-		var color = (answers[i].correct == true) ? "quizz-question-correct-feedback" : "quizz-question-incorrect-feedback";
-		output += '<div class="quizz-question-feedback '+ color +'">'+ answers[i].feedback +'</div>';
-		output += '</div>';
-
-	}
-	$(".Ldt-Quizz-Questions").html(output);
-
-	//If there is an attached resource, display it on the resources overlay
-	if (typeof this.annotation.content.data.resource != "undefined") {
-		$(".Ldt-Ressources-Overlay").html(annotation.content.data.resource);
-		$(".Ldt-Ressources-Overlay").show();
-	}
-
-	$(".Ldt-Quizz-Overlay").show();
-    
-	$(".Ldt-Quizz-Submit").fadeIn();
-
-	//In case we click on the first "Skip" link
-	$(".quizz-submit-skip-link").click({media: this.media}, function(event) {
-		_this.hide();
-		event.data.media.play();
-	});
-
-	var _this = this;
-	//Trying to catch timeupdate and play events
-	/*
-    this.onMediaEvent("timeupdate", function(_time) {
-        if (_time < annotation.begin || _time > ( annotation.begin + 1000) ) {
-			_this.hide();
-			_this.media.play();
+		if (annotation.content.data.type == "multiple_choice") {
+			this.question = new IriSP.Widgets.MultipleChoiceQuestion(annotation);
 		}
-    });
-    this.onMediaEvent("play", function(_time) {
-        if (_time < annotation.begin || _time > ( annotation.begin + 500)) {
-			_this.hide();
+		else if (annotation.content.data.type == "unique_choice") {
+			this.question = new IriSP.Widgets.UniqueChoiceQuestion(annotation);
 		}
-    });
-	*/
+
+		var output = "";
+		for (i = 0; i < answers.length; i++) {
+			//alert( answers[i].content);
+
+			output += '<div class="quizz-question-block"><p>' + this.question.renderTemplate(answers[i], i) + answers[i].content + '</p>';
+			var color = (answers[i].correct == true) ? "quizz-question-correct-feedback" : "quizz-question-incorrect-feedback";
+			output += '<div class="quizz-question-feedback '+ color +'">'+ answers[i].feedback +'</div>';
+			output += '</div>';
+
+		}
+		$(".Ldt-Quizz-Questions").html(output);
+
+		//If there is an attached resource, display it on the resources overlay
+		if (typeof this.annotation.content.data.resource != "undefined") {
+			$(".Ldt-Ressources-Overlay").html(annotation.content.data.resource);
+			$(".Ldt-Ressources-Overlay").show();
+		}
+
+		$(".Ldt-Quizz-Overlay").show();
+		
+		$(".Ldt-Quizz-Submit").fadeIn();
+
+		//In case we click on the first "Skip" link
+		$(".quizz-submit-skip-link").click({media: this.media}, function(event) {
+			_this.hide();
+			event.data.media.play();
+		});
+
+		var _this = this;
+		//Trying to catch timeupdate and play events
+		/*
+		this.onMediaEvent("timeupdate", function(_time) {
+		    if (_time < annotation.begin || _time > ( annotation.begin + 1000) ) {
+				_this.hide();
+				_this.media.play();
+			}
+		});
+		this.onMediaEvent("play", function(_time) {
+		    if (_time < annotation.begin || _time > ( annotation.begin + 500)) {
+				_this.hide();
+			}
+		});
+		*/
+	}
 };
 
 IriSP.Widgets.Quizz.prototype.hide = function() {
@@ -209,6 +212,16 @@ IriSP.Widgets.Quizz.prototype.draw = function() {
 
     var _this = this;
 	
+    this.onMdpEvent("Quizz.activate", function() {
+		_this.quizz_activated = true;
+		console.log("[Quizz] : abled");
+    });
+
+    this.onMdpEvent("Quizz.deactivate", function() {
+		_this.quizz_activated = false;
+		console.log("[Quizz] disabled");
+    });
+
 	_this.container = $("<div class='Ldt-Quizz-Overlay right_panel'></div>").prependTo($("[widget-type*=Player]"));
 	_this.ressourcesContainer = $("<div class='Ldt-Ressources-Overlay left_panel'></div>").prependTo($("[widget-type*=Player]"));
 	_this.container.html(this.template);

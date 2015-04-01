@@ -11,7 +11,10 @@ IriSP.Widgets.Controller.prototype.defaults = {
     disable_annotate_btn: false,
     disable_search_btn: false,
     disable_ctrl_f: false,
-    always_show_search: false
+    always_show_search: false,
+	create_quizz_callback: undefined,
+	enable_quizz_toggle: true
+	
 };
 
 IriSP.Widgets.Controller.prototype.template =
@@ -28,6 +31,12 @@ IriSP.Widgets.Controller.prototype.template =
     + '{{/disable_search_btn}}'
     + '<div class="Ldt-Ctrl-Search">'
     + '<input placeholder="{{ l10n.search }}" type="search" class="Ldt-Ctrl-SearchInput Ldt-TraceMe"></input>'
+    + '</div>'
+    + '<div class="Ldt-Ctrl-button Ldt-Ctrl-Quizz-Enable Ldt-TraceMe">'
+    + '<button class="Ldt-Ctrl-Quizz-Enable-Button">Quizz</button>'
+    + '</div>'
+    + '<div class="Ldt-Ctrl-button Ldt-Ctrl-Quizz-Create Ldt-TraceMe">'
+    + '<button class="Ldt-Ctrl-Quizz-Create-Button">+</button>'
     + '</div>'
     + '</div>'
     + '<div class="Ldt-Ctrl-Right">'
@@ -58,7 +67,8 @@ IriSP.Widgets.Controller.prototype.messages = {
         elapsed_time: "Elapsed time",
         total_time: "Total duration",
         volume: "Volume",
-        volume_control: "Volume control"
+        volume_control: "Volume control",
+		enable_quizz: "Enable quizz"
     },
     fr: {
         play_pause: "Lecture/Pause",
@@ -72,7 +82,8 @@ IriSP.Widgets.Controller.prototype.messages = {
         elapsed_time: "Temps écoulé",
         total_time: "Durée totale",
         volume: "Niveau sonore",
-        volume_control: "Réglage du niveau sonore"
+        volume_control: "Réglage du niveau sonore",
+		enable_quizz: "Activer le quizz"
     }
 };
 
@@ -85,7 +96,9 @@ IriSP.Widgets.Controller.prototype.draw = function() {
     this.$searchBlock = this.$.find(".Ldt-Ctrl-Search");
     this.$searchInput = this.$.find(".Ldt-Ctrl-SearchInput");
     this.$volumeBar = this.$.find(".Ldt-Ctrl-Volume-Bar");
-    
+    this.$createQuizz = this.$.find(".Ldt-Ctrl-Quizz-Create");
+	this.$enableQuizz = this.$.find(".Ldt-Ctrl-Quizz-Enable");
+
     // handle events
     this.onMediaEvent("play","playButtonUpdater");
     this.onMediaEvent("pause","playButtonUpdater");
@@ -104,6 +117,10 @@ IriSP.Widgets.Controller.prototype.draw = function() {
     this.$searchInput.keyup(this.functionWrapper("searchHandler"));
     this.$searchInput.on("search", this.functionWrapper("searchHandler"));
   
+	//enable quizz
+	this.$enableQuizz.click(this.functionWrapper("toggleQuizz"));
+	this.$createQuizz.click(this.functionWrapper("createQuizz"));
+
 	var _volctrl = this.$.find(".Ldt-Ctrl-Volume-Control");
     this.$.find('.Ldt-Ctrl-Sound')
         .click(this.functionWrapper("muteHandler"))
@@ -202,6 +219,31 @@ IriSP.Widgets.Controller.prototype.playButtonUpdater = function() {
     }
 };
 
+//Quizz
+IriSP.Widgets.Controller.prototype.createQuizz = function() {
+	if ( typeof this.create_quizz_callback != "undefined" ) {
+		this.create_quizz_callback();
+	}
+};
+
+IriSP.Widgets.Controller.prototype.toggleQuizz = function() {
+	this.enable_quizz_toggle = !this.enable_quizz_toggle;
+	if (this.enable_quizz_toggle) {    
+		$(".Ldt-Ctrl-Quizz-Enable-Button").html("Quizz ON");
+		$(".Ldt-Ctrl-Quizz-Create").show();
+		this.player.trigger("Quizz.activate");
+
+		console.log("[Controller] Quizz module enabled"); 
+	}
+	else
+	{
+		$(".Ldt-Ctrl-Quizz-Enable-Button").html("Quizz OFF");
+		$(".Ldt-Ctrl-Quizz-Create").hide();
+	    this.player.trigger("Quizz.deactivate");
+
+		console.log("[Controller] Quizz module disabled");
+	}
+};
 
 IriSP.Widgets.Controller.prototype.playHandler = function() {
     if (this.media.getPaused()) {        
