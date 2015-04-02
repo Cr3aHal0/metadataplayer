@@ -327,6 +327,64 @@ IriSP.Widgets.QuizzCreator.prototype.hide = function() {
 };
 
 
+IriSP.Widgets.QuizzCreator.prototype.exportAnnotations = function() {
+    var widget = this;
+    var annotations = this.getWidgetAnnotations().sortBy(function(_annotation) {
+        return _annotation.begin;
+    });;
+    var $ = IriSP.jQuery;
+
+	var content = "{annotations : [\n";
+
+	var i = 0;
+	var goal = annotations.length - 1;
+	var _this = this;
+
+	annotations.forEach(function(_a) {
+		var _exportedAnnotations = new IriSP.Model.List(_this.player.sourceManager), /* Création d'une liste d'annotations contenant une annotation afin de l'envoyer au serveur */
+        _export = _this.player.sourceManager.newLocalSource({serializer: IriSP.serializers[_this.api_serializer]}); /* Création d'un objet source utilisant un sérialiseur spécifique pour l'export */
+		_exportedAnnotations.push(_a); /* Ajout de l'annotation à la liste à exporter */
+		_export.addList("annotation",_exportedAnnotations); /* Ajout de la liste à exporter à l'objet Source */
+		content += _export.serialize();
+		if (i < goal) {
+			content += ",\n";
+		}
+		i++;
+	});
+	content += "]}";
+
+    var el = $("<pre>")
+            .addClass("exportContainer")
+            .text(content)
+            .dialog({
+                title: "Annotation export",
+                open: function( event, ui ) {
+                    // Select text
+                    var range;
+                    if (document.selection) {
+		                range = document.body.createTextRange();
+                        range.moveToElementText(this[0]);
+		                range.select();
+		            } else if (window.getSelection) {
+		                range = document.createRange();
+		                range.selectNode(this[0]);
+		                window.getSelection().addRange(range);
+		            }
+                },
+                autoOpen: true,
+                width: '80%',
+                minHeight: '400',
+                height: 400,
+                buttons: [ { text: "Close", click: function() { $( this ).dialog( "close" ); } },
+                           { text: "Download", click: function () {
+                               a = document.createElement('a');
+                               a.setAttribute('href', 'data:text/plain;base64,' + btoa(content));
+                               a.setAttribute('download', 'Annotations - ' + widget.media.title.replace(/[^ \w]/g, '') + '.json');
+                               a.click();
+                           } } ]
+            });
+};
+
 /* Fonction effectuant l'envoi des annotations */
 IriSP.Widgets.QuizzCreator.prototype.onSubmit = function() {
 
