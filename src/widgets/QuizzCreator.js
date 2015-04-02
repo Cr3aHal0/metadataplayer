@@ -535,6 +535,9 @@ IriSP.Widgets.QuizzCreator.prototype.onSubmit = function() {
                 }
 
 				_tabs.tabs("option", "active", get_tab_index('#tab-quizz'));
+
+				//Refresh the quizz container
+				_this.player.trigger("Quizz.refresh");
             },
             error: function(_xhr, _error, _thrown) {
                 IriSP.log("Error when sending annotation", _thrown);

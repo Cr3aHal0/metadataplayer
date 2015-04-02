@@ -205,6 +205,28 @@ IriSP.Widgets.Quizz.prototype.globalScore = function() {
 	return array;
 }
 
+IriSP.Widgets.Quizz.prototype.refresh = function() { 
+    var _annotations = this.getWidgetAnnotations().sortBy(function(_annotation) {
+        return _annotation.begin;
+    });
+
+    var _this = this;
+
+	_this.totalAmount = _annotations.length;
+	_this.number = 0;
+	_this.correct = [];
+
+    _annotations.forEach(function(_a) {
+		//Fix each annotation as "non-answered yet"
+		_this.correct.push(-1);
+		_a.number = _this.number++;
+        _a.on("enter", function() {
+            _this.update(_a);
+        });
+    });
+
+}
+
 IriSP.Widgets.Quizz.prototype.draw = function() {   
 
     var _annotations = this.getWidgetAnnotations().sortBy(function(_annotation) {
@@ -223,6 +245,11 @@ IriSP.Widgets.Quizz.prototype.draw = function() {
     this.onMdpEvent("Quizz.deactivate", function() {
 		_this.quizz_activated = false;
 		console.log("[Quizz] disabled");
+    });
+
+    this.onMdpEvent("Quizz.refresh", function() {
+		console.log("[Quizz] refreshed");
+		_this.refresh();
     });
 
 	_this.container = $("<div class='Ldt-Quizz-Overlay right_panel'></div>").prependTo($("[widget-type*=Player]"));
