@@ -7,8 +7,6 @@ if (typeof IriSP.serializers === "undefined") {
 IriSP.serializers.ldt_annotate = {
     serializeAnnotation : function(_data, _source) {
         var _annType = _data.getAnnotationType();
-		console.log("Serializing : " + _annType.id);
-		console.log(_data);
         return {
             id: _data.id,
             begin: _data.begin.milliseconds,
@@ -37,8 +35,6 @@ IriSP.serializers.ldt_annotate = {
         };
     },
     deserializeAnnotation : function(_anndata, _source) {
-		console.log("Deserializing :");
-		console.log(_anndata);
         var _ann = new IriSP.Model.Annotation(_anndata.id, _source);
         _ann.description = _anndata.content.description || "";
         _ann.title = _anndata.content.title || "";
