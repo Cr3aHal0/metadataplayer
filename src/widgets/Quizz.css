@@ -27,7 +27,7 @@
 
 .Ldt-Quizz-Questions {
 		overflow-y: auto;
-		max-height: 100%;
+		max-height: 350px;
         margin: 10px;
         padding: 10px;
         border-left:5px solid gray;

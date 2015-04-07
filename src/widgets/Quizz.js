@@ -38,7 +38,10 @@ IriSP.Widgets.Quizz.prototype.annotationTemplate = '';
 
 IriSP.Widgets.Quizz.prototype.update = function(annotation) {
 
-	if (this.quizz_activated) {
+	if (this.quizz_activated &&
+		this.correct[annotation.number] != 1 &&
+		this.correct[annotation.number] != 0) {
+
 		console.log("new annotation : ");
 		console.log(annotation);
 
@@ -164,7 +167,9 @@ IriSP.Widgets.Quizz.prototype.answer = function() {
 	});
 
 	var correctness = this.globalScore();
-	$(".Ldt-Quizz-Score").html(correctness[0] + " bonne(s) réponse(s) / " + correctness[1] + " mauvaise(s) réponse(s)");
+	var score = "";
+	score += '<span class="Ldt-Quizz-Correct-Answer">' + correctness[0] +'</span> / <span class="Ldt-Quizz-Incorrect-Answer">' + correctness[1] + '</span>';
+	$(".Ldt-Quizz-Score").html("Q"+ (this.annotation.number+1) + "/" + this.totalAmount + " : " + score);
 	
 	//Hide the "Validate" button and display the UI dedicated to votes
 	$(".Ldt-Quizz-Submit").fadeOut();
