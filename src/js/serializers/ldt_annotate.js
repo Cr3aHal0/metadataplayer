@@ -6,17 +6,13 @@ if (typeof IriSP.serializers === "undefined") {
 
 IriSP.serializers.ldt_annotate = {
     serializeAnnotation : function(_data, _source) {
-        var _annType = _data.getAnnotationType();
+        var _annType = _data.getAnnotationType();		
         return {
             id: _data.id,
             begin: _data.begin.milliseconds,
             end: _data.end.milliseconds,
             content: {
-				data : ( _annType.id == "Quizz" ? {
-					type : _data.question_type,
-					question : _data.question_title,
-					answers : _data.question_answers
-				} : {} ),
+				data : (_annType.id.localeCompare("Quizz") == 0 ? _data.content.data : {} ),
                 description: _data.description,
                 title: _data.title,
                 audio: _data.audio
@@ -27,7 +23,7 @@ IriSP.serializers.ldt_annotate = {
             type: ( typeof _annType.dont_send_id !== "undefined" && _annType.dont_send_id ? "" : _annType.id ),
             meta: {
                 created: _data.created,
-				"id-ref": ( _annType.id == "Quizz" ? "Quizz" : ""),
+				"id-ref": ( (_annType.id.localeCompare("Quizz") == 0 ) ? "Quizz" : ""),
                 creator: _data.creator,
                 modified: _data.modified,
                 contributor: _data.contributor

@@ -343,6 +343,7 @@ IriSP.Widgets.QuizzCreator.prototype.exportAnnotations = function() {
 	annotations.forEach(function(_a) {
 		var _exportedAnnotations = new IriSP.Model.List(_this.player.sourceManager), /* Création d'une liste d'annotations contenant une annotation afin de l'envoyer au serveur */
         _export = _this.player.sourceManager.newLocalSource({serializer: IriSP.serializers[_this.api_serializer]}); /* Création d'un objet source utilisant un sérialiseur spécifique pour l'export */
+		_a.setAnnotationType("Quizz");
 		_exportedAnnotations.push(_a); /* Ajout de l'annotation à la liste à exporter */
 		_export.addList("annotation",_exportedAnnotations); /* Ajout de la liste à exporter à l'objet Source */
 		content += _export.serialize();
@@ -418,9 +419,11 @@ IriSP.Widgets.QuizzCreator.prototype.onSubmit = function() {
 
     _annotation.setAnnotationType(_annotationType.id); /* Id du type d'annotation */
     _annotation.description = $(".Ldt-QuizzCreator-Question-Area").val().trim(); /* Champ description */
-	_annotation.question_type = $(".Ldt-QuizzCreator-Question-Type").val();
-	_annotation.question_title = _annotation.description;
-	_annotation.question_answers = [];
+	_annotation.content = {};
+	_annotation.content.data = {};
+	_annotation.content.data.type = $(".Ldt-QuizzCreator-Question-Type").val();
+	_annotation.content.data.question = _annotation.description;
+	_annotation.content.data.answers = [];
 
 	
 	for(var i = 0; i < this.nbQuestions; i++) {
@@ -431,7 +434,7 @@ IriSP.Widgets.QuizzCreator.prototype.onSubmit = function() {
 				content : $("#question"+ i).val(),
 				feedback : $("#feedback"+ i).val()
 			};
-			_annotation.question_answers.push(answer);
+			_annotation.content.data.answers.push(answer);
 		}
 	}
 

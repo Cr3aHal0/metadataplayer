@@ -13,11 +13,7 @@ IriSP.serializers.ldt_localstorage = {
             begin: _data.begin.milliseconds,
             end: _data.end.milliseconds,
             content: {
-				data : ( _annType.id == "Quizz" ? {
-					type : _data.question_type,
-					question : _data.question_title,
-					answers : _data.question_answers
-				} : {} ),
+				data : (_annType.id.localeCompare("Quizz") == 0 ? _data.content.data : {} ),
                 description: _data.description,
                 title: _data.title,
                 audio: _data.audio
@@ -36,8 +32,6 @@ IriSP.serializers.ldt_localstorage = {
         };
     },
     deserializeAnnotation : function(_anndata, _source) {
-		console.log("Deserializing :");
-		console.log(_anndata);
         var _ann = new IriSP.Model.Annotation(_anndata.id, _source);
         _ann.description = _anndata.content.description || "";
         _ann.title = _anndata.content.title || "";
