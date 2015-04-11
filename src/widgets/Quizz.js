@@ -39,8 +39,8 @@ IriSP.Widgets.Quizz.prototype.annotationTemplate = '';
 IriSP.Widgets.Quizz.prototype.update = function(annotation) {
 
 	if (this.quizz_activated &&
-		this.correct[annotation.number] != 1 &&
-		this.correct[annotation.number] != 0) {
+		this.correct[annotation.id] != 1 &&
+		this.correct[annotation.id] != 0) {
 
 		console.log("new annotation : ");
 		console.log(annotation);
@@ -81,7 +81,7 @@ IriSP.Widgets.Quizz.prototype.update = function(annotation) {
 		for (i = 0; i < answers.length; i++) {
 			//alert( answers[i].content);
 
-			output += '<div class="quizz-question-block"><p>' + this.question.renderTemplate(answers[i], i) + answers[i].content + '</p>';
+			output += '<div class="quizz-question-block"><p>' + this.question.renderTemplate(answers[i], i) + '<span class="quizz-question-label">'+ answers[i].content + '</span></p>';
 			var color = (answers[i].correct == true) ? "quizz-question-correct-feedback" : "quizz-question-incorrect-feedback";
 			output += '<div class="quizz-question-feedback '+ color +'">'+ answers[i].feedback +'</div>';
 			output += '</div>';
@@ -98,6 +98,11 @@ IriSP.Widgets.Quizz.prototype.update = function(annotation) {
 		$(".Ldt-Quizz-Overlay").show();
 		
 		$(".Ldt-Quizz-Submit").fadeIn();
+	
+		//Let's automatically check the checkbox/radio if we click on the label
+		$(".quizz-question-label").click(function() {
+			var parent = $(this).parent().children('.quizz-question').first().prop('checked', true);
+		});
 
 		//In case we click on the first "Skip" link
 		$(".quizz-submit-skip-link").click({media: this.media}, function(event) {
@@ -155,12 +160,14 @@ IriSP.Widgets.Quizz.prototype.answer = function() {
 	//Todo : display the result in a cool way :)
 	if (faux == true) {
 		$(".Ldt-Quizz-Result").html("Mauvaise réponse");
-		this.correct[this.annotation.number] = 0;
+		$(".Ldt-Quizz-Result").css({"background-color" : "red"});
+		this.correct[this.annotation.id] = 0;
 	}
 	else
 	{
 		$(".Ldt-Quizz-Result").html("Bonne réponse !");
-		this.correct[this.annotation.number] = 1;
+		$(".Ldt-Quizz-Result").css({"background-color" : "green"});
+		this.correct[this.annotation.id] = 1;
 	}
 	$(".Ldt-Quizz-Result").animate({height:"100%"},500, "linear", function(){
 		$(".Ldt-Quizz-Result").delay( 2000 ).animate({height:"0%"}, 500);
@@ -198,10 +205,10 @@ IriSP.Widgets.Quizz.prototype.globalScore = function() {
 	var ok = 0;
 	var ko = 0;
 	for(var i = 0; i < this.totalAmount; i++) {
-		if (this.correct[i] == 1) {
+		if (this.correct[this.keys[i]] == 1) {
 			ok++;
 		}
-		else if (this.correct[i] == 0)
+		else if (this.correct[this.keys[i]] == 0)
 		{
 			ko++;
 		}
@@ -219,11 +226,13 @@ IriSP.Widgets.Quizz.prototype.refresh = function() {
 
 	_this.totalAmount = _annotations.length;
 	_this.number = 0;
-	_this.correct = [];
+	_this.correct = {};
+	_this.keys = {};
 
     _annotations.forEach(function(_a) {
 		//Fix each annotation as "non-answered yet"
-		_this.correct.push(-1);
+		_this.correct[_a.id] = -1;
+		_this.keys[_this.number] = _a.id;
 		_a.number = _this.number++;
         _a.on("enter", function() {
             _this.update(_a);
@@ -250,6 +259,7 @@ IriSP.Widgets.Quizz.prototype.draw = function() {
     this.onMdpEvent("Quizz.deactivate", function() {
 		_this.quizz_activated = false;
 		console.log("[Quizz] disabled");
+		_this.hide();
     });
 
     this.onMdpEvent("Quizz.refresh", function() {
@@ -271,11 +281,13 @@ IriSP.Widgets.Quizz.prototype.draw = function() {
 
 	_this.totalAmount = _annotations.length;
 	_this.number = 0;
-	_this.correct = [];
+	_this.correct = {};
+	_this.keys = {};
 
     _annotations.forEach(function(_a) {
 		//Fix each annotation as "non-answered yet"
-		_this.correct.push(-1);
+		_this.correct[_a.id] = -1;
+		_this.keys[_this.number] = _a.id;
 		_a.number = _this.number++;
         _a.on("enter", function() {
             _this.update(_a);

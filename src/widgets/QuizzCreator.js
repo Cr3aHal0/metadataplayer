@@ -128,6 +128,18 @@ IriSP.Widgets.QuizzCreator.prototype.template =
 	+	'<div><button class="Ldt-QuizzCreator-Question-Add">Ajouter une </button>&nbsp;<button class="Ldt-QuizzCreator-Question-Save">Sauvegarder</button></div>'
 	+ '</div>';
 
+IriSP.Widgets.QuizzCreator.prototype.hmsToSecondsOnly = function(str) {
+    var p = str.split(':'),
+        s = 0, m = 1;
+
+    while (p.length > 0) {
+        s += m * parseInt(p.pop(), 10);
+        m *= 60;
+    }
+
+    return s;
+}
+
 IriSP.Widgets.QuizzCreator.prototype.draw = function() {
 	
     var _annotations = this.getWidgetAnnotations().sortBy(function(_annotation) {
@@ -166,8 +178,11 @@ IriSP.Widgets.QuizzCreator.prototype.draw = function() {
         });
     });
 
-	$(".Ldt-QuizzCreator-Time").keypress(function() {
-		_this.setBegin(this.val());
+	$(".Ldt-QuizzCreator-Time").keyup(function() {
+		var str = $(".Ldt-QuizzCreator-Time").val();
+		_this.begin = _this.hmsToSecondsOnly(str) * 1000;
+		_this.end = _this.begin + 1000;
+		console.log(_this.begin);
 	});
 
     this.onMediaEvent("timeupdate", function(_time) {
@@ -177,7 +192,6 @@ IriSP.Widgets.QuizzCreator.prototype.draw = function() {
         };
     });
 };
-
 
 IriSP.Widgets.QuizzCreator.prototype.addQuestion = function(annotation, number) {
 
@@ -389,6 +403,11 @@ IriSP.Widgets.QuizzCreator.prototype.exportAnnotations = function() {
 /* Fonction effectuant l'envoi des annotations */
 IriSP.Widgets.QuizzCreator.prototype.onSubmit = function() {
 
+	if (this.nbQuestions <= 0) {
+		alert("Vous devez spécifier au moins une réponse à votre question !");
+		return false;
+	}
+
     var _this = this,
         _exportedAnnotations = new IriSP.Model.List(this.player.sourceManager), /* Création d'une liste d'annotations contenant une annotation afin de l'envoyer au serveur */
         _export = this.player.sourceManager.newLocalSource({serializer: IriSP.serializers[this.api_serializer]}), /* Création d'un objet source utilisant un sérialiseur spécifique pour l'export */
@@ -430,7 +449,7 @@ IriSP.Widgets.QuizzCreator.prototype.onSubmit = function() {
 		if (typeof $("#question"+ i) != "undefined") {
 			console.log(i);
 			var answer = {
-				correct : ($(".quizz-question-"+ i).is(':checked')) ? true : false, 
+				correct : ($(".Ldt-Quizz-Question-Check-"+ i).is(':checked')) ? true : false, 
 				content : $("#question"+ i).val(),
 				feedback : $("#feedback"+ i).val()
 			};
