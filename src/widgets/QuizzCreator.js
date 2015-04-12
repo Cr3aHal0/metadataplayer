@@ -3,13 +3,6 @@
 IriSP.Widgets.QuizzCreator = function(player, config) {
     var _this = this;
     IriSP.Widgets.Widget.call(this, player, config);
-    if (_this.editable_storage != '' && window.localStorage[_this.editable_storage]) {
-        this.source.onLoad(function () {
-            var _export = _this.player.sourceManager.newLocalSource({serializer: IriSP.serializers['ldt_localstorage']});
-            _export.deSerialize(window.localStorage[_this.editable_storage]);
-            _this.source.merge(_export);
-        });
-    };
 };
 
 IriSP.Widgets.QuizzCreator.prototype = new IriSP.Widgets.Widget();
@@ -140,6 +133,13 @@ IriSP.Widgets.QuizzCreator.prototype.hmsToSecondsOnly = function(str) {
     return s;
 }
 
+/* Hide and clear the interface is case of someone skipped or answer the current question in the Quizz panel*/
+IriSP.Widgets.QuizzCreator.prototype.skip = function() {
+	$(".Ldt-QuizzCreator-Time").val("");
+	$(".Ldt-QuizzCreator-Question-Area").val("");
+	$(".Ldt-QuizzCreator-Questions-Block").html("");
+}
+
 IriSP.Widgets.QuizzCreator.prototype.draw = function() {
 	
     var _annotations = this.getWidgetAnnotations().sortBy(function(_annotation) {
@@ -147,8 +147,12 @@ IriSP.Widgets.QuizzCreator.prototype.draw = function() {
     });
 
 	console.log(_annotations.length + " Quizz annotations ");
-
     var _this = this;
+
+    this.onMdpEvent("QuizzCreator.skip", function() {
+		console.log("[Quizz] skipped");
+		_this.skip();
+    });
 
     this.begin = new IriSP.Model.Time();
     this.end = this.source.getDuration();

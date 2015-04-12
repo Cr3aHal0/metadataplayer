@@ -107,6 +107,7 @@ IriSP.Widgets.Quizz.prototype.update = function(annotation) {
 		//In case we click on the first "Skip" link
 		$(".quizz-submit-skip-link").click({media: this.media}, function(event) {
 			_this.hide();
+			_this.player.trigger("QuizzCreator.skip");
 			event.data.media.play();
 		});
 
@@ -191,14 +192,12 @@ IriSP.Widgets.Quizz.prototype.answer = function() {
 		_this.hide();
 		$(".Ldt-Ressources-Overlay").hide();
 
+		_this.player.trigger("QuizzCreator.skip");
+
 	});
 
 	$(".Ldt-Quizz-Votes-Buttons").trigger("click", this.media);
 };
-
-IriSP.Widgets.Quizz.prototype.skip_question = function() {
-
-}
 
 IriSP.Widgets.Quizz.prototype.globalScore = function() { 
 	//Define 2 variables to know how good and bad answers there are
