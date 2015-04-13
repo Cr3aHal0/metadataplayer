@@ -234,8 +234,10 @@ IriSP.Widgets.QuizzCreator.prototype.addQuestion = function(annotation, number) 
 		this.nbQuestions++;
 	}
 
-	$(".Ldt-QuizzCreator-Remove").click(function() {
-		$(this).closest(".Ldt-QuizzCreator-Questions-Question").remove();
+	$("body").on("click", ".Ldt-QuizzCreator-Remove", function() {
+		var id = this.id;
+		$("#"+ id).closest(".Ldt-QuizzCreator-Questions-Question").remove();
+		_this.nbQuestions--;
 	});
 
 	$(".Ldt-QuizzCreator-Questions-Block").append(output);
@@ -285,8 +287,10 @@ IriSP.Widgets.QuizzCreator.prototype.onQuestionAdd = function(e) {
 
 	$(".Ldt-QuizzCreator-Questions-Block").append(output);
 
-	$(".Ldt-QuizzCreator-Remove").click(function() {
-		$(this).closest(".Ldt-QuizzCreator-Questions-Question").remove();
+	$("body").on("click", ".Ldt-QuizzCreator-Remove", function() {
+		var id = this.id;
+		$("#"+ id).closest(".Ldt-QuizzCreator-Questions-Question").remove();
+		_this.nbQuestions--;
 	});
 
 	$(".Ldt-QuizzCreator-Answer-Content").last().focus();
