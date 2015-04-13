@@ -69,7 +69,8 @@ IriSP.serializers.ldt_localstorage = {
 		if (_anntype.id == "Quizz") {
 			_ann.content = _anndata.content;
 			_ann.content.data = _anndata.content.data;
-			_ann.content.data.question = _anndata.content.data.question
+			_ann.content.data.question = _anndata.content.data.question;
+			_ann.content.data.resource = _anndata.content.data.resource;
 			_ann.content.data.answers = _anndata.content.data.answers;
 		}
         _source.getAnnotations().push(_ann);

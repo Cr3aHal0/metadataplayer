@@ -108,17 +108,18 @@ IriSP.Widgets.QuizzCreator.prototype.messages = {
 IriSP.Widgets.QuizzCreator.prototype.template =
 	  '<div class="Ldt-QuizzCreator-Ui Ldt-TraceMe">'
 	+	'<div class="Ldt-QuizzCreator-Question-Form">'
-	+		'<textarea class="Ldt-QuizzCreator-Question-Area" style="width:calc(100% - 20px);" placeholder="Votre question"></textarea>'
+	+		'<textarea class="Ldt-QuizzCreator-Question-Area" style="width:calc(100% - 20px);" placeholder="Votre question"></textarea><br />'
+	+		'<textarea class="Ldt-QuizzCreator-Resource-Area" style="width:calc(100% - 20px);" placeholder="Ressources (lien vers une image, etc.)"></textarea><br />'
 	+	'</div>'
 	+		'<p>Type de question : '
 	+ 		'<select name="type" class="Ldt-QuizzCreator-Question-Type">'
 	+			'<option value="unique_choice">Choix unique</option>'
 	+			'<option value="multiple_choice">Choix multiple</option>'
 	+		'</select>'
-	+		' à <input type="text" placeholder="hh:mm:ss" size="6" class="Ldt-QuizzCreator-Time" /><button class="Ldt-QuizzCreator-Export-Link">Exporter</button></p>'
+	+		' à <input type="text" placeholder="hh:mm:ss" size="6" class="Ldt-QuizzCreator-Time" /><button class="Ldt-QuizzCreator-Question-Save">Sauvegarder</button></p>'
 	+ 	'<div class="Ldt-QuizzCreator-Questions-Block">'
 	+ 	'</div>'
-	+	'<div><button class="Ldt-QuizzCreator-Question-Add">Ajouter une </button>&nbsp;<button class="Ldt-QuizzCreator-Question-Save">Sauvegarder</button></div>'
+	+	'<div><button class="Ldt-QuizzCreator-Question-Add">Ajouter une question</button></div>'
 	+ '</div>';
 
 IriSP.Widgets.QuizzCreator.prototype.hmsToSecondsOnly = function(str) {
@@ -137,6 +138,7 @@ IriSP.Widgets.QuizzCreator.prototype.hmsToSecondsOnly = function(str) {
 IriSP.Widgets.QuizzCreator.prototype.skip = function() {
 	$(".Ldt-QuizzCreator-Time").val("");
 	$(".Ldt-QuizzCreator-Question-Area").val("");
+	$(".Ldt-QuizzCreator-Resource-Area").val("");
 	$(".Ldt-QuizzCreator-Questions-Block").html("");
 }
 
@@ -170,8 +172,10 @@ IriSP.Widgets.QuizzCreator.prototype.draw = function() {
 	this.$.find(".Ldt-QuizzCreator-Question-Add").bind("click", this.functionWrapper("onQuestionAdd"));
 	this.$.find(".Ldt-QuizzCreator-Question-Save").bind("click", this.functionWrapper("onSubmit"));
 
+	$("#tab-quizz").prepend('<button class="Ldt-QuizzCreator-Export-Link">Exporter</button>');
 
 	$(".Ldt-QuizzCreator-Export-Link").click(function() {
+		console.log("[Quizz] export");
 		_this.exportAnnotations();
 	});
 
@@ -216,6 +220,7 @@ IriSP.Widgets.QuizzCreator.prototype.addQuestion = function(annotation, number) 
 
 	$("#Ldt-QuizzCreator-Time").val(annotation.begin);
 	$(".Ldt-QuizzCreator-Question-Area").val(annotation.content.data.question);
+	$(".Ldt-QuizzCreator-Resource-Area").val(annotation.content.data.resource);
 
 	for (i = 0; i < answers.length; i++) {
 		output += '<div class="Ldt-QuizzCreator-Questions-Question">'
@@ -341,6 +346,7 @@ IriSP.Widgets.QuizzCreator.prototype.hide = function() {
 	console.log("hide");
 	$(".Ldt-QuizzCreator-Questions-Block").html("");
 	$(".Ldt-QuizzCreator-Question-Area").val("");
+	$(".Ldt-QuizzCreator-Resource-Area").val("");
 	$(".Ldt-QuizzCreator-Time").val("");
 };
 
@@ -446,6 +452,7 @@ IriSP.Widgets.QuizzCreator.prototype.onSubmit = function() {
 	_annotation.content.data = {};
 	_annotation.content.data.type = $(".Ldt-QuizzCreator-Question-Type").val();
 	_annotation.content.data.question = _annotation.description;
+	_annotation.content.data.resource = $(".Ldt-QuizzCreator-Resource-Area").val();
 	_annotation.content.data.answers = [];
 
 	

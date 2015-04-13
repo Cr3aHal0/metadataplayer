@@ -249,7 +249,7 @@ IriSP.Widgets.Quizz.prototype.draw = function() {
 	console.log(_annotations.length + " Quizz annotations ");
 
     var _this = this;
-	
+
     this.onMdpEvent("Quizz.activate", function() {
 		_this.quizz_activated = true;
 		console.log("[Quizz] : abled");
