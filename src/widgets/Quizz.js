@@ -102,6 +102,15 @@ IriSP.Widgets.Quizz.prototype.update = function(annotation) {
 		//Let's automatically check the checkbox/radio if we click on the label
 		$(".quizz-question-label").click(function() {
 			var parent = $(this).parent().children('.quizz-question').first().prop('checked', true);
+			$(".Ldt-Quizz-Questions .quizz-question").each( function(index, item) {
+				if ($(item).is(':checked')) {
+					$(item).parent().children(".quizz-question-label").css("text-decoration", "underline");
+				}
+				else
+				{
+					$(item).parent().children(".quizz-question-label").css("text-decoration", "none");
+				}
+			});
 		});
 
 		//In case we click on the first "Skip" link
@@ -133,6 +142,8 @@ IriSP.Widgets.Quizz.prototype.hide = function() {
 	$(".Ldt-Quizz-Votes").fadeOut();
 	$(".Ldt-Quizz-Overlay").hide();
 	$(".Ldt-Ressources-Overlay").hide();
+
+	$("#tab_quizz_toc").hide();
 }
 
 IriSP.Widgets.Quizz.prototype.answer = function() { 
@@ -162,12 +173,14 @@ IriSP.Widgets.Quizz.prototype.answer = function() {
 	if (faux == true) {
 		$(".Ldt-Quizz-Result").html("Mauvaise réponse");
 		$(".Ldt-Quizz-Result").css({"background-color" : "red"});
+		$('*[data-annotation="'+ this.annotation.id +'"]').children(".Ldt-AnnotationsList-Duration").children(".Ldt-AnnotationsList-Begin").removeClass("Ldt-Quizz-Correct-Answer").addClass("Ldt-Quizz-Incorrect-Answer");
 		this.correct[this.annotation.id] = 0;
 	}
 	else
 	{
 		$(".Ldt-Quizz-Result").html("Bonne réponse !");
 		$(".Ldt-Quizz-Result").css({"background-color" : "green"});
+		$('*[data-annotation="'+ this.annotation.id +'"]').children(".Ldt-AnnotationsList-Duration").children(".Ldt-AnnotationsList-Begin").removeClass("Ldt-Quizz-Incorrect-Answer").addClass("Ldt-Quizz-Correct-Answer");
 		this.correct[this.annotation.id] = 1;
 	}
 	$(".Ldt-Quizz-Result").animate({height:"100%"},500, "linear", function(){
@@ -252,6 +265,7 @@ IriSP.Widgets.Quizz.prototype.draw = function() {
 
     this.onMdpEvent("Quizz.activate", function() {
 		_this.quizz_activated = true;
+		$("#tab_quizz_toc").show();
 		console.log("[Quizz] : abled");
     });
 

@@ -151,6 +151,16 @@ IriSP.Widgets.QuizzCreator.prototype.draw = function() {
 	console.log(_annotations.length + " Quizz annotations ");
     var _this = this;
 
+	this.onMdpEvent("QuizzCreator.show", function() {
+		console.log("[QuizzCreator] show at " + _this.media.currentTime);
+		$("#QuizzEditContainer").show();
+		_this.setBegin(_this.media.currentTime);
+    });
+
+	this.onMdpEvent("QuizzCreator.hide", function() {
+		$("#QuizzEditContainer").hide();
+	});
+
     this.onMdpEvent("QuizzCreator.skip", function() {
 		console.log("[Quizz] skipped");
 		_this.skip();

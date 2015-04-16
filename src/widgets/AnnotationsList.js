@@ -37,6 +37,9 @@ IriSP.Widgets.AnnotationsList.prototype.defaults = {
     show_twitter: false,
     twitter_hashtag: '',
     publish_type: "PublicContribution",
+	// Being able to customize the quizz annotations list
+	is_quizz: false,
+	show_result: false,
     // Used to publish annotations
     api_endpoint_template: "",
     api_serializer: "ldt_annotate",
@@ -552,6 +555,12 @@ IriSP.Widgets.AnnotationsList.prototype.refresh = function(_forceRedraw) {
                     delete_local_annotation(this.dataset.editable_id);
             });
             this.$.find('.Ldt-AnnotationsList-Edit').click(function(e) {
+				//Handle quizz behaviour
+				if (_this.is_quizz) {
+					$(this).parent().parent().children(".Ldt-AnnotationsList-Title").children("a").click();
+					_tabs.tabs("option", "active", get_tab_index('#tab-quizz-edit'));
+					return;
+				}
                 // Edit annotation title. We have to specify the insertion point.
                 var insertion_point = $(this).parents(".Ldt-AnnotationsList-li").find(".Ldt-AnnotationsList-Title");
                 var element = insertion_point.find("a");

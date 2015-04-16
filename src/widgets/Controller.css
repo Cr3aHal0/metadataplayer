@@ -9,7 +9,7 @@
 }
 
 .Ldt-Ctrl-Left {
-  float:left; width: 400px;
+  float:left; width: 450px;
 }
 
 .Ldt-Ctrl-Right {
@@ -177,6 +177,10 @@ input.Ldt-Ctrl-SearchInput {
 }
 
 /* quizz */
+
+.Ldt-Ctrl-Quizz-Create {
+	width:110px;
+}
 
 .Ldt-Ctrl-Quizz-Enable {
 	width:80px;
