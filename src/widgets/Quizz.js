@@ -142,8 +142,6 @@ IriSP.Widgets.Quizz.prototype.hide = function() {
 	$(".Ldt-Quizz-Votes").fadeOut();
 	$(".Ldt-Quizz-Overlay").hide();
 	$(".Ldt-Ressources-Overlay").hide();
-
-	$("#tab_quizz_toc").hide();
 }
 
 IriSP.Widgets.Quizz.prototype.answer = function() { 
@@ -272,6 +270,7 @@ IriSP.Widgets.Quizz.prototype.draw = function() {
     this.onMdpEvent("Quizz.deactivate", function() {
 		_this.quizz_activated = false;
 		console.log("[Quizz] disabled");
+		$("#tab_quizz_toc").hide();
 		_this.hide();
     });
 

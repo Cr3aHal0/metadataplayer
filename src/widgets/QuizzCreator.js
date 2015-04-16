@@ -416,8 +416,15 @@ IriSP.Widgets.QuizzCreator.prototype.exportAnnotations = function() {
                 height: 400,
                 buttons: [ { text: "Close", click: function() { $( this ).dialog( "close" ); } },
                            { text: "Download", click: function () {
+								function encode_utf8( s ) {
+								  return unescape( encodeURIComponent( s ) );
+								}
+
+								function decode_utf8( s ) {
+								  return decodeURIComponent( escape( s ) );
+								}
                                a = document.createElement('a');
-                               a.setAttribute('href', 'data:text/plain;base64,' + btoa(content));
+                               a.setAttribute('href', 'data:text/plain;base64,' + btoa(encode_utf8(content)));
                                a.setAttribute('download', 'Annotations - ' + widget.media.title.replace(/[^ \w]/g, '') + '.json');
                                a.click();
                            } } ]
