@@ -274,6 +274,11 @@ IriSP.Widgets.Quizz.prototype.draw = function() {
 		_this.hide();
     });
 
+    this.onMdpEvent("Quizz.hide", function() {
+		console.log("[Quizz] hide");
+		_this.hide();
+    });
+
     this.onMdpEvent("Quizz.refresh", function() {
 		console.log("[Quizz] refreshed");
 		_this.refresh();

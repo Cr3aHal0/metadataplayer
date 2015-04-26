@@ -32,10 +32,10 @@ IriSP.Widgets.Controller.prototype.template =
     + '<div class="Ldt-Ctrl-Search">'
     + '<input placeholder="{{ l10n.search }}" type="search" class="Ldt-Ctrl-SearchInput Ldt-TraceMe"></input>'
     + '</div>'
-    + '<div class="Ldt-Ctrl-button Ldt-Ctrl-Quizz-Enable Ldt-TraceMe">'
+    + '<div style="float:left;" class="Ldt-Ctrl-Quizz-Enable Ldt-TraceMe">'
     + '<button class="Ldt-Ctrl-Quizz-Enable-Button">Quizz</button>'
     + '</div>'
-    + '<div class="Ldt-Ctrl-button Ldt-Ctrl-Quizz-Create Ldt-TraceMe">'
+    + '<div style="float:left;" class="Ldt-Ctrl-Quizz-Create Ldt-TraceMe">'
     + '<button class="Ldt-Ctrl-Quizz-Create-Button">Ajouter question</button>'
     + '</div>'
     + '</div>'
@@ -234,7 +234,8 @@ IriSP.Widgets.Controller.prototype.playButtonUpdater = function() {
 IriSP.Widgets.Controller.prototype.createQuizz = function() {
 	if ( typeof this.create_quizz_callback != "undefined" ) {
 		this.create_quizz_callback();
-		this.player.trigger("QuizzCreator.show");
+		this.player.trigger("Quizz.hide");
+		this.player.trigger("QuizzCreator.create");
 	}
 };
 

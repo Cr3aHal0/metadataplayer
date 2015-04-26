@@ -119,7 +119,7 @@ IriSP.Widgets.QuizzCreator.prototype.template =
 	+		' à <input type="text" placeholder="hh:mm:ss" size="6" class="Ldt-QuizzCreator-Time" /><button class="Ldt-QuizzCreator-Question-Save">Sauvegarder</button></p>'
 	+ 	'<div class="Ldt-QuizzCreator-Questions-Block">'
 	+ 	'</div>'
-	+	'<div><button class="Ldt-QuizzCreator-Question-Add">Ajouter une question</button></div>'
+	+	'<div><button class="Ldt-QuizzCreator-Question-Add">Ajouter une réponse</button></div>'
 	+ '</div>';
 
 IriSP.Widgets.QuizzCreator.prototype.hmsToSecondsOnly = function(str) {
@@ -142,18 +142,43 @@ IriSP.Widgets.QuizzCreator.prototype.skip = function() {
 	$(".Ldt-QuizzCreator-Questions-Block").html("");
 }
 
-IriSP.Widgets.QuizzCreator.prototype.draw = function() {
-	
+IriSP.Widgets.QuizzCreator.prototype.reloadAnnotations = function() {
+
     var _annotations = this.getWidgetAnnotations().sortBy(function(_annotation) {
         return _annotation.begin;
     });
 
-	console.log(_annotations.length + " Quizz annotations ");
-    var _this = this;
+	var _this = this;
+	var flag = 1;
+
+    _annotations.forEach(function(_a) {
+		_a.on("enter", function() {
+            _this.addQuestion(_a, flag++);
+        });
+    });
+
+}
+
+IriSP.Widgets.QuizzCreator.prototype.draw = function() {
+	
+    this.reloadAnnotations();
+
+	var _this = this;
+
+    this.onMediaEvent("timeupdate", function(_time) {
+    	_this.setBegin(_time);
+    });
 
 	this.onMdpEvent("QuizzCreator.show", function() {
 		console.log("[QuizzCreator] show at " + _this.media.currentTime);
 		$("#QuizzEditContainer").show();
+		_this.setBegin(_this.media.currentTime);
+    });
+
+	this.onMdpEvent("QuizzCreator.create", function() {
+		console.log("[QuizzCreator] create at " + _this.media.currentTime);
+		$("#QuizzEditContainer").show();
+		_this.skip();
 		_this.setBegin(_this.media.currentTime);
     });
 
@@ -188,13 +213,6 @@ IriSP.Widgets.QuizzCreator.prototype.draw = function() {
 		console.log("[Quizz] export");
 		_this.exportAnnotations();
 	});
-
-	var flag = 1;
-    _annotations.forEach(function(_a) {
-		_a.on("enter", function() {
-            _this.addQuestion(_a, flag++);
-        });
-    });
 
 	$(".Ldt-QuizzCreator-Time").keyup(function() {
 		var str = $(".Ldt-QuizzCreator-Time").val();
@@ -592,6 +610,7 @@ IriSP.Widgets.QuizzCreator.prototype.onSubmit = function() {
 
 				//Refresh the quizz container
 				_this.player.trigger("Quizz.refresh");
+				_this.reloadAnnotations();
             },
             error: function(_xhr, _error, _thrown) {
                 IriSP.log("Error when sending annotation", _thrown);

@@ -9,7 +9,7 @@
 }
 
 .Ldt-Ctrl-Left {
-  float:left; width: 450px;
+  float:left; width: 500px;
 }
 
 .Ldt-Ctrl-Right {
@@ -179,13 +179,14 @@ input.Ldt-Ctrl-SearchInput {
 /* quizz */
 
 .Ldt-Ctrl-Quizz-Create {
-	width:110px;
+	width:120px;
 }
 
 .Ldt-Ctrl-Quizz-Enable {
-	width:80px;
+	width:100px;
 }
 
-.Ldt-Ctrl-Quizz-Enable button {
+.Ldt-Ctrl-Quizz-Enable button, Ldt-Ctrl-Quizz-Create button {
 	width: 100%;
 }
+
